@@ -29,10 +29,12 @@ resource "azurerm_network_interface" "network_interface" {
   tags = local.common_tags
 }
 
-resource "azurerm_network_interface_application_security_group_association" "nisga" {
-  network_interface_id          = azurerm_network_interface.network_interface.id
-  application_security_group_id = data.terraform_remote_state.vnet.outputs.security_group_id
+resource "azurerm_network_interface_security_group_association" "nisga" {
+  network_interface_id      = azurerm_network_interface.network_interface.id
+  network_security_group_id = data.terraform_remote_state.vnet.outputs.security_group_id
 }
+
+
 
 
 resource "azurerm_linux_virtual_machine" "vm" {
@@ -45,7 +47,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   admin_ssh_key {
     username   = "terraform"
-    public_key = file("./azure-key.pub")
+    public_key = file("azure-key.pub")
   }
 
   os_disk {
